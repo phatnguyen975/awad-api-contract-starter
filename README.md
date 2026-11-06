@@ -67,7 +67,7 @@ say so in `NOTES.md` — that is a finding, not a failure.
 
 ## What to turn in on Classroom — `IA#3`
 
-Individual, 100 points, 2% of the course. Due **Wednesday, October 28, 2026,
+Individual, 100 points, 2% of the course. Due **Thursday, November 12, 2026,
 22:00**. The rubric is attached to the assignment on Classroom.
 
 One zip of **this repository, including `.git`**, named
