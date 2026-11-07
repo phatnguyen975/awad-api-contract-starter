@@ -143,6 +143,24 @@ The human approved A1–A6 and selected/checked B2 and B4, with the requested A5
 | A5 | 409 idempotency-key-in-flight; completion/crash/operational clearing |
 | A6 | Deprecation: @1792022400; Sunset: Thu, 31 Dec 2026 23:59:59 GMT; GET /health and /v1 |
 
+### Human-provided additional point
+
+#### C2 — §2: Unsupported method on an existing /v1 path
+
+Section and sentences: §2, lines 21–22, 42, 53 and 57.
+
+- Lines 21–22: "Every `/v1` response with a 4xx or 5xx status — including a request for a `/v1` path that does not exist — is a **problem details** object (RFC 9457):"
+- Line 42: "`https://menu.example/problems/` followed by a slug from the table below. No other values"
+- Line 53: "no resource with that id (also when the id is not a positive integer), or no such `/v1` path" (`404 not-found`).
+- Line 57: "anything else. `detail` is a fixed, generic sentence" (`500 internal`).
+
+- Found by: me
+- Reading 1: a route is a method and path pair, so DELETE /v1/orders is a /v1 path that does not exist: 404 not-found.
+- Reading 2: the path exists and no row of the problem table fits, so it falls under "anything else": 500 internal.
+- Agent chose: 404 not-found (`handleV1`, src/v1.js lines 259–269 and 284; `sendProblem`, lines 25–34). The response type is `https://menu.example/problems/not-found`.
+- My decision: Reading 1, because the table of problem types is closed (line 42), has no 405, and "internal" is for server faults, not for a client sending an unsupported request.
+- Sentence to add to CONTRACT.md: "A request to an existing /v1 path with a method that path does not support is answered 404 not-found, like any other /v1 path that does not exist; no 405 is used."
+
 ## 4. Findings about the tests or the contract
 
 - Run 1: the suite `§4 two instances, one database (as in session 4)` stopped during setup with `npm run migrate failed: undefined` and a null process status; its two tests were cancelled. A separate Node child-process diagnostic on Windows found that invoking npm directly returns status null with ENOENT, while invoking npm through cmd succeeds. This is consistent with an npm-launch compatibility issue, but I have not read the test source and cannot confirm the suite's exact invocation. The repository migration runner itself already passed direct up/down/up after the authorized fileURLToPath fix. I would investigate the execution environment before changing /v1 behavior. Neither test/ nor CONTRACT.md was edited, and run 1 was not repeated or replaced.

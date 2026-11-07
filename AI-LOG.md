@@ -138,3 +138,35 @@ By hand: The human clarified the logging scope and requested consistent instruct
 Audit result: Phases 1–6 are present; there are zero implementation-fix commits and zero invented implementation-fix entries, and three nonempty Rejected fields were manually checked for their actual meaning. Both capture commits contain only their capture files; source/migration/script history is unchanged after the final capture. Forbidden tracked paths and starter diffs are empty. G7 is approved; skill-instruction changes are committed separately as chore(agent), followed by the phase-7 final-pass commit.
 
 G7 response (approval excerpt): Approved. I read oral-prep.md and the log.
+
+## 2026-11-07 — Phase 6 follow-up: C2 unsupported-method ambiguity
+
+```
+Tool: Codex (GPT-6)
+Prompt: The human's complete instruction is reproduced verbatim below this entry.
+Asked for: Add the human-provided C2 ambiguity to NOTES.md section 3 with Found by: me, record this change, and commit only the C2 documentation change and its log entry.
+Kept: The supplied two readings, Reading 1 decision and reason, and proposed sentence. The human introduced C2 in the four-candidate request before the agent reviewed it; it was not one of the agent's earlier numbered A/B candidates.
+Changed: Added a C2 block with the cited §2 sentences and current implementation references. The chosen 404 not-found behavior already matches handleV1 and sendProblem, so no code, contract, test or run capture was changed. Earlier uncommitted drafting is excluded from this commit.
+Rejected: Nothing rejected in this step.
+By hand: The human supplied C2, identified the relevant contract lines, provided both readings, selected Reading 1 with a reason and proposed sentence, and explicitly requested the Found by: me label and commit message.
+```
+
+Human instruction (verbatim):
+
+> Add candidate C2 to NOTES.md section 3 as a new block.
+> Label: "Found by: me".
+> - Section and sentences: §2 lines 21-22, 42, 53, 57.
+> - Reading 1: a route is a method and path pair, so DELETE /v1/orders is a /v1 path that does not
+>   exist: 404 not-found.
+> - Reading 2: the path exists and no row of the problem table fits, so it falls under
+>   "anything else": 500 internal.
+> - Agent chose: 404 not-found (src/v1.js lines 259-269 and 284, sendProblem lines 25-34).
+> - My decision: Reading 1, because the table of problem types is closed (line 42), has no 405, and
+>   "internal" is for server faults, not for a client sending an unsupported request.
+> - Sentence to add to CONTRACT.md: "A request to an existing /v1 path with a method that path does
+>   not support is answered 404 not-found, like any other /v1 path that does not exist; no 405 is
+>   used."
+> Then write the AI-LOG entry for this change. Commit with `docs(notes): add C2 unsupported-method ambiguity` and tell me the
+> commit hash.
+
+Verification: The preceding read-only review identified handleV1 at src/v1.js lines 259–269 and 284, and sendProblem at lines 25–34. Unsupported DELETE /v1/orders returns 404 with type https://menu.example/problems/not-found. This is a documentation-only addition; no new test run or replacement final capture was needed.
