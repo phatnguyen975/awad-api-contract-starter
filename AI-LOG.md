@@ -139,6 +139,22 @@ Audit result: Phases 1–6 are present; there are zero implementation-fix commit
 
 G7 response (approval excerpt): Approved. I read oral-prep.md and the log.
 
+## 2026-11-07 — Phase 8: Preflight and self-assessment
+
+```
+Tool: Codex (GPT-6)
+Prompt: Approved. I read oral-prep.md and the log. Continue to phase 8 with ia3-submit. Run the preflight, audit the six criteria, and stop at gate G8 with the score table before writing the zip.
+Asked for: Verify the committed submission state, audit the six rubric criteria, draft the evidenced self-assessment and stop for score approval before packaging.
+Kept: The unchanged implementation, original run-1 capture, Linux final capture, notes and assistant provenance. A fresh clone of committed baseline 2e5bb12 passed migration round trip, seed, legacy 3/3 and contract 29/29 in Linux Node v22.23.4. Static checks confirmed one 002 migration pair, no application CREATE TABLE, no forbidden tracked directories and no starter diff for test/, CONTRACT.md or package.json.
+Changed: Created SELF_ASSESSMENT_REPORT.md with proposed claims 30/30, 10/10, 9/10, 17/20, 16/20 and 9/10, totaling 91/100, each with file/commit evidence. Used 16 for criterion 5 because the human's checked points came from the agent's second-pass candidates and the rubric may require independent discovery. Captured preflight output in ignored .agents/scratch/phase8-preflight.txt; report records the reproducible commands, environment and results. No code or capture changed.
+Rejected: Nothing rejected in this step.
+By hand: The human read oral-prep.md and the log, approved G7 and requested preflight/scoring with a stop at G8. The human later authorized committing the current 100/100 review copy and cleaning temporary files, and requested an independent assessment in a new session before packaging. No zip has been created or submitted.
+```
+
+Preflight baseline: 2e5bb12, after separate skill-scope commit 9fcec91 and final-pass log commit 2e5bb12. Fresh clone: git clone --no-hardlinks . .agents/scratch/submit-verify-1. The clone was clean, read-only in a network-disabled Linux container, and used fresh temporary SQLite files. Migration up/down/up and migrate/seed/legacy/contract all exited successfully. Summaries match the final contract capture: legacy 3/3, contract 29/29, fail 0, cancelled 0.
+
+Order checks: predictions precede the first implementation; no code changed between ia3-first-attempt and run 1; no implementation-fix commits exist; no code changed after the final capture. Both capture commits contain only their respective capture file. The human authorized committing the current review copy; archive creation, unzip-and-run verification and submission remain deferred until the independent review and later human authorization.
+
 ## 2026-11-07 — Phase 6 follow-up: C2 unsupported-method ambiguity
 
 ```
@@ -170,3 +186,5 @@ Human instruction (verbatim):
 > commit hash.
 
 Verification: The preceding read-only review identified handleV1 at src/v1.js lines 259–269 and 284, and sendProblem at lines 25–34. Unsupported DELETE /v1/orders returns 404 with type https://menu.example/problems/not-found. This is a documentation-only addition; no new test run or replacement final capture was needed.
+
+Phase-8 commit authorization and hand-off: The current report claims 30 + 10 + 10 + 20 + 20 + 10 = 100/100, with the human-provided C2 recorded separately at 007743f. Earlier score proposals above remain chronological records. The human authorized committing the review copy and removing temporary clones, databases and helper scripts, then waiting for a new-session independent review. That authorization does not authorize creating or submitting the zip.
