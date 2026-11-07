@@ -68,3 +68,21 @@ By hand: The human read and approved the explanations at G4. No fix prompt has b
 Diagnostic: A standalone Node child-process check ran npm --version directly and through cmd. The direct invocation returned status null and ENOENT; the cmd invocation succeeded. This supports a Windows npm-launch hypothesis, without confirming the unread test harness's exact invocation. No contract re-run, test-source inspection, or code change followed run 1.
 
 G4 response (verbatim): Approved. I read the lines.
+
+## 2026-11-07 — Phase 5: Environment repair and verification
+
+```
+Tool: Codex (GPT-6)
+Prompt: (agent-drafted, approved) Fix: "§4.2 a retry that lands on the other instance is still a replay" + "§4.4 a cursor from one instance works on the other"; CONTRACT.md §4.2: "Same key, same body → the **stored** response: status `201`, the identical body, the same `Location`, plus the header **`Idempotent-Replayed: true`**."; CONTRACT.md §4.4: "A cursor is **opaque**: the client stores it and sends it back unchanged, and never builds one."; Observed: Both tests were cancelled after the parent suite reported that npm run migrate failed with an undefined diagnostic and a null child-process status.
+Asked for: Repair the execution environment, run the unchanged repository, preserve run 1, and propose code fixes only if actual API mismatches appear.
+Kept: All implementation and migration-runner code remains identical to ia3-first-attempt. Both formerly cancelled multi-instance tests passed, as did the other 27 contract tests and all three legacy tests.
+Changed: Downloaded the official node:22-bookworm-slim Docker image and ran a network-disabled container with a read-only repository mount and a fresh temporary SQLite database. Ran migration, seed, legacy tests and contract tests, capturing stdout/stderr together in ignored .agents/scratch/run-2.txt. Added the verified follow-up finding to NOTES.md section 4; no implementation fix was needed.
+Rejected: Nothing rejected in this step.
+By hand: The human approved the environment-repair proposal at G5a with "Approved". G5b review and approval are pending.
+```
+
+Approved action: Run the unchanged committed repository in Linux with Node >=22.13, no network during execution, a read-only repository mount and a temporary database; keep subsequent output separate from contract-run-1.txt. No package dependencies were installed in the repository.
+
+Environment: Node v22.23.4; Docker image node:22-bookworm-slim, downloaded digest sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d.
+
+Verification: migrate and seed succeeded, legacy 3/3 passed, contract 29/29 passed, fail 0, cancelled 0, process exit 0. The UTF-8 scratch capture contains the complete run. The original run-1 capture remains unchanged. The OS and Node version both changed from the first run, so no claim is made that this isolates a single platform/version variable. No test source was read or edited. This finding is recorded as documentation, without inventing a fix(v1) commit for unchanged code. No final capture has been created; G5b approval comes next.
