@@ -11,7 +11,7 @@ Examples use bash. Detect the shell you are in and run the equivalent. Keep `ia3
 
 ## 1. Detect the phase
 
-Setup check first: `AGENTS.md`, `.agents/skills/` and the tag `ia3-starter` must exist. If not, stop and tell the human that setup (phase 0) is unfinished.
+Setup check first: `AGENTS.md`, `.agents/skills/` and the tag `ia3-starter` must exist. If not, stop and tell the human that setup is unfinished.
 
 ```bash
 git status --short

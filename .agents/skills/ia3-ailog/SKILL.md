@@ -7,7 +7,7 @@ description: Keep AI-LOG.md for the IA#3 assignment — the honest account of wh
 
 The log is graded (criterion 6) and is the place where AI use is declared. It must be short, specific and **true**. A real `Rejected` line is worth more than an invented one; an entry that says nothing checkable ("used AI, fixed things") is worth nothing. The human will be asked about anything in it.
 
-`AI-LOG.md` already exists with the phase 0 entry (written by the human). If it is missing, create it with the heading `# AI-LOG.md — IA#3` and tell the human.
+`AI-LOG.md` records assignment work from phase 1 onward. If it is missing, create it with the heading `# AI-LOG.md — IA#3` and tell the human.
 
 ## When to write
 
@@ -46,7 +46,6 @@ Entries are plain and short; three honest lines per field are enough. No secrets
 
 | Phase | Entry                                   | Must contain                                                                      |
 | ----- | --------------------------------------- | --------------------------------------------------------------------------------- |
-| 0     | Plan, skills, AGENTS.md (human-written) | The use of Claude chat for setup                                                  |
 | 1     | Predictions                             | Who wrote them; what the human changed at G1                                      |
 | 2     | First attempt                           | The hand-over prompt verbatim; what the self-review changed or dropped; G2 answer |
 | 3     | Run 1                                   | The command, N/29 (written in the phase 4 commit)                                 |
