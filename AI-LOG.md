@@ -78,11 +78,47 @@ Asked for: Repair the execution environment, run the unchanged repository, prese
 Kept: All implementation and migration-runner code remains identical to ia3-first-attempt. Both formerly cancelled multi-instance tests passed, as did the other 27 contract tests and all three legacy tests.
 Changed: Downloaded the official node:22-bookworm-slim Docker image and ran a network-disabled container with a read-only repository mount and a fresh temporary SQLite database. Ran migration, seed, legacy tests and contract tests, capturing stdout/stderr together in ignored .agents/scratch/run-2.txt. Added the verified follow-up finding to NOTES.md section 4; no implementation fix was needed.
 Rejected: Nothing rejected in this step.
-By hand: The human approved the environment-repair proposal at G5a with "Approved". G5b review and approval are pending.
+By hand: The human approved the environment-repair proposal at G5a with "Approved" and reviewed and approved the diff at G5b with "Approved. I reviewed the fix diff."
 ```
 
 Approved action: Run the unchanged committed repository in Linux with Node >=22.13, no network during execution, a read-only repository mount and a temporary database; keep subsequent output separate from contract-run-1.txt. No package dependencies were installed in the repository.
 
 Environment: Node v22.23.4; Docker image node:22-bookworm-slim, downloaded digest sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d.
 
-Verification: migrate and seed succeeded, legacy 3/3 passed, contract 29/29 passed, fail 0, cancelled 0, process exit 0. The UTF-8 scratch capture contains the complete run. The original run-1 capture remains unchanged. The OS and Node version both changed from the first run, so no claim is made that this isolates a single platform/version variable. No test source was read or edited. This finding is recorded as documentation, without inventing a fix(v1) commit for unchanged code. No final capture has been created; G5b approval comes next.
+Verification: migrate and seed succeeded, legacy 3/3 passed, contract 29/29 passed, fail 0, cancelled 0, process exit 0. The UTF-8 scratch capture contains the complete run. The original run-1 capture remains unchanged. The OS and Node version both changed from the first run, so no claim is made that this isolates a single platform/version variable. No test source was read or edited. This finding is recorded as documentation, without inventing a fix(v1) commit for unchanged code. After G5b approval, the separate final run below was captured and committed.
+
+## 2026-11-07 — Phase 5: Final run
+
+```
+Tool: Codex (GPT-6)
+Prompt: After G5b approval, capture the final contract-test run against a clean database and commit only contract-run-final.txt.
+Asked for: Preserve a final 29/29 capture after the last implementation change and the approved environment repair.
+Kept: The complete contract stdout/stderr in contract-run-final.txt, committed alone as 06f8e43. It reports 29 tests, pass 29, fail 0, cancelled 0. The original run-1 capture remains unchanged.
+Changed: Started a new Linux container with a fresh temporary SQLite database, the same Node v22.23.4 image, a read-only repository mount and no network. Ran migrate, seed and legacy tests before the final contract command. Routed preflight output separately into ignored .agents/scratch/final-preflight.txt so the final capture contains only the contract command's output.
+Rejected: Nothing rejected in this step.
+By hand: The human reviewed and approved G5b. No additional human code changes are claimed.
+```
+
+G5b response (verbatim): Approved. I reviewed the fix diff.
+
+Final command: npm run contract 2>&1 inside the Linux container, with stdout captured directly as bytes into host contract-run-final.txt. No PowerShell text conversion, output filtering, or migration helper was used.
+
+Verification: Clean-database migration and seed succeeded; legacy 3/3 passed; final contract 29/29 passed with exit 0. UTF-8 decoding succeeded with no BOM or NUL bytes. No src/, migrations/ or scripts/ change followed the successful environment run. The capture-only commit contains just contract-run-final.txt; this log entry will be committed with phase 6 as required by ia3-contract-run and ia3-ailog.
+
+## 2026-11-07 — Phase 6: Ambiguities and prediction outcomes
+
+```
+Tool: Codex (GPT-6)
+Prompt: Which sentences of CONTRACT.md could be read two ways, and what did you choose for each
+Asked for: Identify competing readings, explain the implementation's choices and proposed contract wording, and perform a separate pass for a human-selected point outside the original answer.
+Kept: The human approved A1–A6 covering Content-Type rejection, URL integer spelling, duplicate query parameters, limit changes with cursors, abandoned in-flight claims after crashes, and legacy header coverage. Added the human-selected B2 and B4 as Found by: me, with the supplied reasons and proposed sentences verbatim. Each adopted point includes its section, two readings, actual code choice, decision, reason and testable proposed wording. The document is in English; the conversation summarizes it in Vietnamese.
+Changed: Replaced A5's proposed sentence with the human's completion/crash/operational-action wording while keeping its decision unchanged. Checked A1–A6 for concrete status/header/field/number values and strengthened A6 with the exact Deprecation and Sunset values, showing the rewrite before editing. Showed the functions and line numbers implementing A4, A6, B2 and B4 before finalizing, and confirmed both B readings match the unchanged code within the stated six-step precedence. Section 5 records both predictions as not having come true, using their passed tests in the original run.
+Rejected: Replaced the agent's original A5 proposed sentence at the human's request, using the more explicit completion/crash/operational-action sentence they supplied. Excluded raw-text JSON comparison, ignoring unknown fields during complete-body comparison, page-shifting offset pagination and a cursor for a final full page as ambiguity claims because other sentences settle them. B1 and B3 were not selected for adoption; no human rejection of their readings is claimed.
+By hand: The human reported: "I picked B2 and B4 from your second-pass candidates; I read the contract lines myself; the wording of my reasons and sentences was drafted with Claude chat and I reviewed and adopted it." The human approved A1–A6, supplied A5's replacement sentence, checked B4 against lines 121–122, 134 and 141–144 and B2 against lines 35, 46, 112–113 and 124, and authorized the phase-6 commit and continuation to G7.
+```
+
+Second-pass provenance: The agent generated B1–B4 separately from A1–A6 by sweeping inputs and interacting rules and comparing cases with passed test names. The human selected and checked B2 and B4; Claude chat drafted the supplied wording, which the human reviewed and adopted. These were not independently discovered from scratch by the human. The Found by: me labels implement the workflow's selection/check convention while preserving that origin. B1 and B3 remain exploratory scratch candidates rather than adopted decisions. Test names do not prove which inputs the unread assertions cover.
+
+Code confirmation before finalizing: A4 is listOrders in src/v1.js:224, with current/default limit at 232 and cursor/filter/boundary logic at 237–254. A6 is legacy/handle in src/app.js:25 and 64, with header installation at 27 and early health/v1 dispatch plus exact header values at 66–73. B2 is validateOrder in src/v1.js:68, specifically the two independent field checks at 81–87; each non-object line gets two child pointers and no parent-line entry. B4 is priorRequest/placeOrder at 148 and 157: header and JSON checks run first, then an in-flight claim returns 409 without a body comparison; stored-response comparison at 174–176 can return 422. Code was not changed.
+
+G6 status: Approved subject to the requested wording and code verification, both completed. Only NOTES.md and AI-LOG.md are changed deliverables; CONTRACT.md, test/, source, migrations and run captures remain unchanged. The phase-5 final-run entry above is included in this documentation commit. The human explicitly authorized commit message docs(notes): ambiguities and prediction outcomes, then phase 7 stopping at G7.
