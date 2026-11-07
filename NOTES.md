@@ -26,7 +26,7 @@ The following records the agent's original six-point answer and the human-approv
 
 The §4.2 proposals retain the existing six-step precedence: key/header validation and JSON parsing still precede the step-3 in-flight/replay decision. B2 specifies two errors per non-object line, not a maximum of two errors for the entire request.
 
-### Agent's answer
+### Agent's answer — A1–A6
 
 These are gaps or competing readings that affect observable behavior. I checked the whole contract before including them. I excluded raw-text JSON comparison, ignoring unknown fields when comparing complete JSON bodies, offset pagination that shifts pages, and issuing a cursor for a final full page: other sentences already settle those cases. Token storage format and indefinite retention beyond the stated minimum are implementation policies, not ambiguities by themselves.
 
@@ -98,19 +98,20 @@ Context: "Every legacy response, errors included, carries these two headers" fol
 - Sentence to add to CONTRACT.md: "Every response dispatched to the legacy handler, including unmatched paths and unsupported methods, must include Deprecation: @1792022400 and Sunset: Thu, 31 Dec 2026 23:59:59 GMT; GET /health and /v1 responses do not carry these headers."
 - Implementation evidence: `legacy` in src/app.js:25 installs headers at line 27; its unmatched-route error is at line 61. `handle` at line 64 dispatches GET /health and /v1 before passing the exact header values to legacy at lines 70–73.
 
-### Second-pass points selected and checked by the human
+### My selected points, decisions and proposed wording — B2 and B4
 
-The agent separately swept JSON parsing, malformed line elements, URL normalization and intersecting error conditions, offering B1–B4 outside A1–A6. The human picked B2 and B4, personally checked the contract lines cited below, and reviewed and adopted the reasons and sentences drafted with Claude chat. The Found by: me labels record that selection and check under this workflow; the candidates' origin in the agent's second pass is not hidden. B1 (duplicate JSON names) and B3 (trailing slashes) were not selected and are not adopted decisions here. The passed test names alone do not establish what unread assertions cover.
+I selected B2 and B4 from the agent's separate second-pass candidates, read the cited contract lines myself, and pointed them out for clarification. I supplied the two final proposed sentences below and requested their adoption. Claude chat helped draft the wording of my reasons and sentences; I reviewed and adopted it. The attribution records my selection, contract check and proposed resolution, together with the candidates' source. The second pass offered B1–B4; only B2 and B4 were adopted here.
 
 #### B2 — §§2, 4.2: Pointers for a non-object order line
 
 Context: "one entry **per problem found** (not just the first)" does not define whether `items: [null]` is one invalid line or two missing field problems. The whole-body non-object rule does not specify nested elements.
 
-- Found by: me
+- Found by: me (selected and checked from the agent's second-pass candidates)
 - Reading 1: Return one validation entry pointing at `/items/0` because the line itself is not an object.
 - Reading 2: Return separate validation entries for the required menuItemId and qty fields at `/items/0/menuItemId` and `/items/0/qty`.
 - Agent chose: Reading 2. `validateOrder` adds both field errors for a non-object element.
 - My decision: two errors, one per field.
+- Final wording proposed by: me; drafted with Claude chat, reviewed and adopted by me, then supplied to the implementing agent.
 - My reason (verbatim): The contract defines the rules per field (lines 112-113), requires every broken field to be listed (line 124) and shows pointers such as /items/0/qty (line 35). An element such as null has neither field, so both field rules are broken, and each broken field is one problem (line 46).
 - Sentence to add to CONTRACT.md: "An element of items that is not an object (for example null) produces exactly two errors entries, /items/{i}/menuItemId and /items/{i}/qty, and no entry for /items/{i}."
 - Human check: CONTRACT.md lines 35, 46, 112–113 and 124.
@@ -120,11 +121,12 @@ Context: "one entry **per problem found** (not just the first)" does not define 
 
 Context: "Same key, different body → `422 idempotency-key-reused`. Nothing is created." and "Same key while the first request is still being processed → `409 idempotency-key-in-flight`. The client waits and retries." can both describe one request; step 3 does not order these alternatives.
 
-- Found by: me
+- Found by: me (selected and checked from the agent's second-pass candidates)
 - Reading 1: Compare against the active request's body and return 422 when the body differs, even before a successful response exists.
 - Reading 2: Return 409 for an active key regardless of its body's equality; apply the 422 comparison after a 201 response has been stored.
 - Agent chose: Reading 2. `priorRequest` checks for an in-flight claim before any field validation and without storing or comparing its fingerprint. Header validation and JSON parsing still run first as steps 1 and 2 require.
 - My decision: 409 first.
+- Final wording proposed by: me; drafted with Claude chat, reviewed and adopted by me, then supplied to the implementing agent.
 - My reason (verbatim): The server stores a key's body fingerprint only when step 6 succeeds (lines 134 and 144), so while the first request is still running there is no stored body to compare with. Line 142-143 defines that situation as 409 and tells the client to wait and retry; after the first request finishes, the retry gets either the replay (same body) or 422 (different body).
 - Sentence to add to CONTRACT.md: "If a request arrives with a key whose first request has not finished, the answer is 409 idempotency-key-in-flight whether or not its body equals the first request's body; a body is compared only against the stored 201 response, after the first request has finished."
 - Human check: CONTRACT.md lines 121–122, 134 and 141–144.

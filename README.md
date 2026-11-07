@@ -1,76 +1,74 @@
-# Session 5 starter — the contract comes first
+# IA#3 — Contract-based menu and order API
 
-CSC13114 · Advanced Web Application Development · HK1 2026–2027
+This repository implements the versioned `/v1` API specified in [CONTRACT.md](CONTRACT.md), alongside the preserved legacy `/menu` API. The assignment brief and rubric are in [docs/ia3-requirements.md](docs/ia3-requirements.md).
 
-The `smart-restaurant` menu service again, as it looks after IA#2: money is an
-integer number of dong. Node 22.13+, no dependencies — SQLite through the
-built-in `node:sqlite`.
+## Requirements
 
-The service still has only its **legacy** API (`/menu…`). Your job today is the
-new, versioned API under `/v1`, and the contract for it is already written:
-**[`CONTRACT.md`](CONTRACT.md)**. You do not write the implementation by hand —
-your agent does, from the contract. Then `npm run contract` decides whether it
-did what the contract says.
+Use Node.js 22.13 or later. The service uses Node built-ins, including `node:sqlite`; no package installation or external dependencies are required.
 
-## Run it
+## Run the service
 
-```bash
-npm run migrate          # creates data/app.db
-npm run seed             # 200 menu items
-npm start                # :3001 — PORT=3002 npm start for a second instance
-npm test                 # the legacy API: green, and it must stay green
-npm run contract         # CONTRACT.md, checked over HTTP: all red until /v1 exists
+On a fresh database:
+
+```sh
+npm run migrate
+npm run seed
+npm start
 ```
 
-| Path | What it is |
-|---|---|
-| `CONTRACT.md` | the specification of `/v1`. **Read it before you prompt anything** |
-| `src/v1.js` | an empty stub — the `/v1` implementation goes here |
-| `src/app.js` | the legacy API, and the place where `/v1` is plugged in |
-| `migrations/` | `001_init` is the schema. A new table is a new `002_….up.sql` + `.down.sql` |
-| `test/legacy.test.js` | what old clients rely on |
-| `test/contract.test.js` | the contract tests — 29 of them, each named after the section it checks |
+The default port is 3001; `PORT` changes it. `DB_PATH` selects a different SQLite file. Seed once for a fresh database: the seed command adds 200 menu items. Migration SQL is applied transactionally, and `npm run migrate:down` reverts only the last applied migration.
 
-## In the room
+On Windows PowerShell, use `npm.cmd` in place of `npm` if execution policy blocks npm.ps1. The migration runner uses `fileURLToPath` to resolve its directory on Windows, Linux and macOS.
 
-1. `npm run migrate && npm run seed && npm test && npm run contract`. Legacy
-   green, contract all red. Commit nothing yet.
-2. Read `CONTRACT.md` — ten minutes, no agent. Start `NOTES.md` with the **two
-   sentences of the contract you expect the agent to get wrong**, and why.
-   **Commit `NOTES.md` now**, before the agent touches `src/` — the commit order
-   is how the rubric sees that you predicted first.
-3. Hand it to your agent. Something like:
+## Verify
 
-   > Implement the `/v1` API in `src/v1.js` exactly as `CONTRACT.md` specifies,
-   > and the headers its section 5 requires on the legacy API in `src/app.js`.
-   > Put any new table in a new migration with a `down`. Do not read or edit
-   > anything under `test/`, and do not edit `CONTRACT.md`. Run `npm test` when
-   > you are done; it must stay green.
+These commands verify the completed implementation. When following the assignment from the starter, preserve the phase gates and first-run timing in AGENTS.md rather than running contract tests early.
 
-4. **Before you fix anything**:
-   `npm run contract 2>&1 | tee contract-run-1.txt` — the agent's first attempt,
-   as it is. Commit it.
-5. Get to green. When a test fails, give the agent the **test name and the
-   section of `CONTRACT.md`** — not the test code. Then
-   `npm run contract 2>&1 | tee contract-run-final.txt`.
-6. In `NOTES.md`, one line per test that failed in `contract-run-1.txt`: the
-   sentence of the contract, what the agent did instead, and — if the sentence
-   could be read two ways — the wording you would change it to.
-7. Ask the agent: *"Which sentences of `CONTRACT.md` could be read two ways, and
-   what did you choose for each?"* A green run does not mean the contract is
-   complete — only that the tests found nothing. For every point it lists, write
-   in `NOTES.md` your decision and the sentence you would add to the contract.
+```sh
+npm test
+npm run contract
+```
 
-Rules: do not edit `test/contract.test.js` to make it pass, and do not change
-`CONTRACT.md` to match the code. If you think a test or the contract is wrong,
-say so in `NOTES.md` — that is a finding, not a failure.
+The verified Linux environment is Node v22.23.4. Both a clean-clone run and the final verification run passed legacy 3/3 and contract 29/29. The final capture itself contains only contract-test output; legacy results are documented in [SELF_ASSESSMENT_REPORT.md](SELF_ASSESSMENT_REPORT.md).
 
-## What to turn in on Classroom — `IA#3`
+The original Windows run passed 27 contract tests and cancelled two during multi-instance setup. A standalone child-process diagnostic found a direct npm launch returning ENOENT on Windows. The same implementation passed both multi-instance tests on Linux; no test source was edited.
 
-Individual, 100 points, 2% of the course. Due **Thursday, November 12, 2026,
-22:00**. The rubric is attached to the assignment on Classroom.
+To reproduce verification in Linux from a read-only repository with a temporary database, use Docker. This command also works from PowerShell:
 
-One zip of **this repository, including `.git`**, named
-`<StudentID>_<self-assessed total>.zip`, containing your `/v1` code,
-`contract-run-1.txt`, `contract-run-final.txt`, `NOTES.md`, `AI-LOG.md` and
-`SELF_ASSESSMENT_REPORT.md`. Leave out `data/`.
+```powershell
+docker run --rm --network none --mount "type=bind,source=$($PWD.Path),target=/work,readonly" --workdir /work --env DB_PATH=/tmp/ia3-verify.db node:22-bookworm-slim sh -c "npm run migrate && npm run seed && npm test && npm run contract"
+```
+
+For a POSIX shell:
+
+```sh
+docker run --rm --network none --mount "type=bind,source=$(pwd),target=/work,readonly" --workdir /work --env DB_PATH=/tmp/ia3-verify.db node:22-bookworm-slim sh -c "npm run migrate && npm run seed && npm test && npm run contract"
+```
+
+Verification used image digest `sha256:5ec23b7c622b00547753bc6ffd78085dd868a68aeb41c8e0a1418f033e13d96d`. A new container supplies a fresh temporary database. Existing run captures are historical evidence; keep subsequent verification output separate.
+
+## Implementation
+
+| Path | Role |
+| --- | --- |
+| `src/v1.js` | Menu/order routes, problem details, validation, idempotency and cursor pagination |
+| `src/app.js` | Legacy behavior and retirement/successor headers, plus dispatch to `/v1` |
+| `migrations/001_init.*.sql` | Starter menu, order and order-line schema |
+| `migrations/002_v1_state.*.sql` | One reversible pair for saved responses, in-flight claims and cursor state |
+| `scripts/migrate.js` | Migration runner with native URL-to-path conversion |
+
+`/v1` prices and totals use integer dong. Legacy `price` remains in thousands of dong. Completed orders retain their line order and price snapshots. Successful idempotency responses and cursor state are stored in SQLite so they work across instances. In-flight claims have no automatic crash expiry; the adopted clarification and other decisions are recorded in NOTES.md.
+
+## Evidence and submission
+
+| Evidence | Location |
+| --- | --- |
+| Predictions, first-run explanations, ambiguities and outcomes | [NOTES.md](NOTES.md) |
+| Prompts, reviews, changes and assistant attribution | [AI-LOG.md](AI-LOG.md) |
+| Original first attempt: 27 pass, 0 fail, 2 cancelled on Windows | [contract-run-1.txt](contract-run-1.txt), commit `c6a383d` |
+| Final contract run: 29 pass, 0 fail, 0 cancelled on Linux | [contract-run-final.txt](contract-run-final.txt), commit `06f8e43` |
+| Current score claim and its evidence | [SELF_ASSESSMENT_REPORT.md](SELF_ASSESSMENT_REPORT.md) |
+
+Predictions were committed at `5ec00af` before the first implementation at `b92fcf1`, tagged `ia3-first-attempt`. No application or migration-runner code changed after that attempt. The Git history preserves the captures and subsequent documentation decisions; it has not been rewritten.
+
+The submission archive must include `.git` and the required deliverables, and exclude `data/`, `node_modules/` and `.agents/scratch/`. Tests, CONTRACT.md and package.json remain unchanged from `ia3-starter`. The original starter README remains available with `git show ia3-starter:README.md`.
