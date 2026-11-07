@@ -17,9 +17,10 @@ One entry per phase, except phase 5: one entry per fix commit.
 
 ## Entry format
 
-```md
+````md
 ## <YYYY-MM-DD> — <Phase N: what>
 
+```
 Tool: <agent name + model>
 Prompt: <exactly what the human handed over; or, for a step you ran yourself, the instruction in one line>
 Asked for: <the task, in one sentence>
@@ -28,6 +29,7 @@ Changed: <what was rewritten, and why>
 Rejected: <what was thrown away, and why>
 By hand: <what the human did in this step>
 ```
+````
 
 Use today's date. If you do not know your own model name, ask the human once and reuse the answer.
 
