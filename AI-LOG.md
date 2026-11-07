@@ -122,3 +122,19 @@ Second-pass provenance: The agent generated B1–B4 separately from A1–A6 by s
 Code confirmation before finalizing: A4 is listOrders in src/v1.js:224, with current/default limit at 232 and cursor/filter/boundary logic at 237–254. A6 is legacy/handle in src/app.js:25 and 64, with header installation at 27 and early health/v1 dispatch plus exact header values at 66–73. B2 is validateOrder in src/v1.js:68, specifically the two independent field checks at 81–87; each non-object line gets two child pointers and no parent-line entry. B4 is priorRequest/placeOrder at 148 and 157: header and JSON checks run first, then an in-flight claim returns 409 without a body comparison; stored-response comparison at 174–176 can return 422. Code was not changed.
 
 G6 status: Approved subject to the requested wording and code verification, both completed. Only NOTES.md and AI-LOG.md are changed deliverables; CONTRACT.md, test/, source, migrations and run captures remain unchanged. The phase-5 final-run entry above is included in this documentation commit. The human explicitly authorized commit message docs(notes): ambiguities and prediction outcomes, then phase 7 stopping at G7.
+
+## 2026-11-07 — Phase 7: AI-LOG audit and oral preparation
+
+```
+Tool: Codex (GPT-6)
+Prompt: Audit AI-LOG.md after the phase-6 commit, write the ignored oral-preparation notes, and stop at G7 for the human to read both.
+Asked for: Check the log's prompts, changes, rejections, attribution and capture timing against the recorded work, and prepare explanations the human can review.
+Kept: The implementation/fix/ambiguity prompts, gate reviews, original Windows run and separate Linux final result, actual rejected code/wording, and explicit Claude-chat provenance for the human-adopted B2/B4 wording. The audit confirms the seven-field fence format and no test-code patterns in the log.
+Changed: Aligned the logging instructions, log and scratch documents with the human's clarified scope: assignment records begin with predictions. Updated the ia3-ailog and ia3-workflow skills accordingly. Wrote ignored .agents/scratch/ai-log-audit.md with the checks and their limits, and .agents/scratch/oral-prep.md covering every contract section, both predictions, both cancelled tests, all eight adopted ambiguities, rules and evidence. Application code and test captures remain unchanged.
+Rejected: Nothing rejected in this step.
+By hand: The human clarified the logging scope and requested consistent instructions and documents, then read oral-prep.md and the log, approved G7, and instructed the agent to continue with phase-8 preflight and scoring, stopping at G8 before creating the zip.
+```
+
+Audit result: Phases 1–6 are present; there are zero implementation-fix commits and zero invented implementation-fix entries, and three nonempty Rejected fields were manually checked for their actual meaning. Both capture commits contain only their capture files; source/migration/script history is unchanged after the final capture. Forbidden tracked paths and starter diffs are empty. G7 is approved; skill-instruction changes are committed separately as chore(agent), followed by the phase-7 final-pass commit.
+
+G7 response (approval excerpt): Approved. I read oral-prep.md and the log.
