@@ -17,7 +17,7 @@ Write `.agents/scratch/oral-prep.md` (not committed). Plain language, so the hum
 - each ambiguity: the two readings, the decision, the proposed sentence;
 - the rules of the assignment and how they were kept.
 
-Show it at gate G7 together with the AI-LOG audit. The human must read it well enough to explain the work: anything they cannot explain scores zero.
+Show it at gate G7 together with the AI-LOG audit. The human should read it well enough to explain the work and correct any attribution or understanding gaps. Score only against the published rubric; do not invent an automatic zero rule that the brief does not state.
 
 ## B. Preflight (phase 8, step 1)
 
@@ -54,22 +54,22 @@ F=$(git log --reverse --format=%H --grep='^fix(v1)' | head -1)
 [ -z "$(git log ia3-first-attempt..$R --format=%h -- src migrations)" ] && echo "no src change between first attempt and run 1: OK"
 ```
 
-Also confirm these six files are tracked at the repository root: `contract-run-1.txt`, `contract-run-final.txt`, `NOTES.md`, `AI-LOG.md`, `SELF_ASSESSMENT_REPORT.md` (after step C), and the code (`src/v1.js`, `src/app.js`, `migrations/002_*`).
+Also confirm the required root deliverables are tracked: `contract-run-1.txt`, `contract-run-final.txt`, `NOTES.md`, `AI-LOG.md`, `SELF_ASSESSMENT_REPORT.md` (after step C), plus the implementation files `src/v1.js`, `src/app.js` and `migrations/002_*`.
 
 ## C. Audit and score (phase 8, step 3)
 
-Go through each criterion, find the band it reaches, and cite evidence for it. Claim the **lower bound** of the band you reach; if you are unsure whether a subjective criterion (4, 5, 6) reaches the top band, claim the lower band's top.
+Go through each criterion against docs/ia3-requirements.md, find the supported band, and cite the final evidence. Do not automatically subtract marks by selecting the lower bound: claim full marks when every top-band requirement is supported, and explain any specific unmet requirement that prevents the maximum. Distinguish a defensible self-assessment from a guarantee of the instructor's mark. Never change evidence or attribute an agent-originated discovery to the human in order to increase the score.
 
 | #   | Top band needs                                                                                                                                                                | Evidence                                | Claim if top band | Claim otherwise                                                                                      |
 | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------------- |
-| 1   | Legacy 3/3, contract 29/29 in the clean run, matches `contract-run-final.txt`                                                                                                 | clean-run output                        | 30                | 25–28 passing → 20; 15–24 → 10; fewer → 0                                                            |
-| 2   | Nothing changed in `test/` or `CONTRACT.md`; every new table in one `002_*` pair with a down                                                                                  | preflight output                        | 10                | table outside a migration or no down → 5; test or contract changed → 0 (and criterion 1 → 0)         |
-| 3   | Two quoted or numbered sentences, each with a reason; commit before the first `src/` change; one outcome line each                                                            | `NOTES.md` §1 and §5; order check       | 9                 | two predictions but a missing reason or outcome → 5; written after the run or only one → 1; none → 0 |
-| 4   | `contract-run-1.txt` committed before any fix; one line per failed test with sentence, what the agent did, proposed wording                                                   | `NOTES.md` §2 count check (`ia3-notes`) | 17                | lines only repeat test names → 11; partial → 4; none → 0                                             |
-| 5   | Agent's answer in `NOTES.md`; each point with section, two readings, decision with reason, proposed sentence; at least one point outside the agent's list chosen by the human | `NOTES.md` §3                           | 17                | none found by the human → 11; no decisions or wording → 4; missing → 0                               |
-| 6   | Hand-over and every fix prompt logged; fix prompts name test and section only; real `Changed` and `Rejected`                                                                  | `AI-LOG.md` audit                       | 9                 | a fix prompt with test code or empty `Rejected` → 5; summary only → 1; none → 0                      |
+| 1   | Legacy 3/3, contract 29/29 in the clean run, matches `contract-run-final.txt`                                                                                                 | clean-run output                        | 30                | use the published 20–29, 10–19 or 0–9 band for the actual test/legacy/startup result |
+| 2   | Nothing changed in `test/` or `CONTRACT.md`; every new table in one `002_*` pair with a down                                                                                  | preflight output                        | 10                | table outside a migration or no down → published 5–9 band; test or contract changed → 0 (and criterion 1 → 0) |
+| 3   | Two quoted or numbered sentences, each with a reason; commit before the first `src/` change; one outcome line each                                                            | `NOTES.md` §1 and §5; order check       | 10                | use the rubric's 5–8, 1–4 or 0 band according to the actual missing evidence |
+| 4   | `contract-run-1.txt` committed before any fix; every unsuccessful test explained from actual output and implementation, with proposed wording where ambiguous                 | `NOTES.md` §2; preserve fail/cancelled distinction | 20        | use the rubric's 11–16, 4–10 or 0–3 band for the actual omission; do not invent HTTP results for cancelled tests |
+| 5   | Agent's answer in `NOTES.md`; each point has section, two readings, decision/reason and proposed sentence; at least one point not listed by the agent was found by the human     | `NOTES.md` §3 and honest discovery provenance | 20          | 11–16 if no independent human-found point is evidenced; 4–10 without decisions/wording; 0–3 if missing |
+| 6   | Hand-over and every fix prompt logged; fix prompts name test and section only; real `Changed` and `Rejected`                                                                  | `AI-LOG.md` audit                       | 10                | use the rubric's 5–8, 1–4 or 0 band according to the actual omission |
 
-The claimed total is the sum (all top bands give 30 + 10 + 9 + 17 + 17 + 9 = 92). Honesty adjustment: a total more than 10 above the mark you really earn costs 3 to 10 points; a total 21 or more below it costs 3. Claiming the lower bound keeps you inside the safe range, and a criterion claimed without evidence counts as not done, so every row needs a pointer.
+The claimed total is the sum; meeting every maximum gives 30 + 10 + 10 + 20 + 20 + 10 = 100. A selected and checked candidate from a second agent pass remains agent-originated; disclose that distinction when judging criterion 5 against the assignment brief. Honesty adjustment follows the brief: more than 10 points of overclaim can cost 3 to 10 marks, and underclaiming by 21 or more can cost 3. Every claimed criterion needs an evidence pointer; preserve the actual runs, commits and human contributions.
 
 ## D. SELF_ASSESSMENT_REPORT.md
 
@@ -84,11 +84,11 @@ Ask the human for their student ID and full name. Create the file at the reposit
 
 | Criterion                                    | Max | I claim | Evidence                                                                       |
 | -------------------------------------------- | --- | ------- | ------------------------------------------------------------------------------ |
-| 1. The contract tests pass                   | 30  | <n>     | contract-run-final.txt: legacy 3/3, contract 29/29                             |
+| 1. The contract tests pass                   | 30  | <n>     | contract-run-final.txt: contract 29/29; documented clean verification: legacy 3/3 |
 | 2. The rules were kept                       | 10  | <n>     | `git diff ia3-starter -- test CONTRACT.md` empty; migrations/002_*.up/down.sql |
 | 3. Predictions, made before the agent ran    | 10  | <n>     | NOTES.md §1, §5; commit `<sha>` precedes `<sha>` (first src change)            |
 | 4. The first run, read line by line          | 20  | <n>     | contract-run-1.txt (commit `<sha>`); NOTES.md §2, <k> lines                    |
-| 5. The sentences that could be read two ways | 20  | <n>     | NOTES.md §3 (A1–A<m>; A<j> chosen by me)                                       |
+| 5. The sentences that could be read two ways | 20  | <n>     | NOTES.md §3: full point analysis and actual discovery provenance; identify a human-found point or disclose the missing requirement |
 | 6. AI-LOG.md                                 | 10  | <n>     | AI-LOG.md: entries for every phase; Rejected in <entries>                      |
 
 ### What I did not manage

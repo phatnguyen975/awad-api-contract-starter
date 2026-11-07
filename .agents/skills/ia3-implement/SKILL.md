@@ -15,7 +15,7 @@ The first attempt is graded as evidence: `contract-run-1.txt` will show what thi
 
 ## Forbidden in this phase
 
-- Running `npm run contract` or any file under `test/`; reading `test/` (exclude it from grep and search).
+- Running `npm run contract` or other files under `test/`, except the explicitly required `npm test` legacy command; reading `test/` is always forbidden (exclude it from grep and search).
 - Editing `CONTRACT.md`, `test/`, `package.json`; adding dependencies.
 - Creating tables from application code.
 - Committing before gate G2.

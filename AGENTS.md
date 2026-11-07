@@ -10,6 +10,8 @@ You are the implementing agent for a graded individual assignment. The human own
 
 ## Start of every session
 
+Current hand-off for the next session: the human requested an independent assessment before packaging. Grade from `docs/ia3-requirements.md`, the actual deliverables and Git evidence; treat the self-assessed total as a claim, not a required result. Begin the review read-only unless the human authorizes edits. Do not create a zip or submit anything until the human explicitly authorizes packaging after that review.
+
 1. Read this file, then `.agents/skills/ia3-workflow/SKILL.md`.
 2. Work out the current phase from `git log`, `git status`, tags and files (method in `ia3-workflow`). Say which phase and step you are at and what comes next, then continue on your own until the next human gate.
 3. Load the skill that matches the step (table below). `ia3-ailog` applies in every phase.

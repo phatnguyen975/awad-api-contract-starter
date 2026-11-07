@@ -61,11 +61,13 @@ Offer 3 to 5 candidates, each with its two readings, what the code currently doe
 
 ## Step 3 — The human picks
 
+Discovery and review are different evidence. A candidate generated in this second pass is still agent-originated, even if it was absent from the first answer. The assignment brief's top band requires at least one point found by the human that the agent did not list. Selecting, checking and adopting a suggested point is useful human work, but does not by itself prove independent discovery. Do not change the actual provenance to satisfy that requirement.
+
 The human chooses at least one candidate (or names one of their own), checks it against `CONTRACT.md` themselves, and gives a reason in their own words. Then:
 
-- Put the human's reason into "My decision" as they wrote it, and write `Found by: me`.
+- Put the human's reason into "My decision" as they wrote it. For an agent-suggested point, identify its agent origin and the human's selection/check separately. An existing `Found by: me` selection/check label must retain an explicit explanation of the candidate's agent origin and must not be counted as proof of independent human discovery. Use an unqualified `Found by: me` discovery label only for a point actually supplied by the human outside the agent's lists.
 - In `AI-LOG.md` record where the point came from (your second pass, or the human) and what the human did (checked it, wrote the reason). Do not hide the second pass; do not exaggerate the human's part.
-- Never write `Found by: me` for a point the human did not choose and check. If they pick none, say so at the gate: the top band of criterion 5 needs at least one point outside the agent's first list.
+- Never credit the human with discovery or checking they did not perform. If no independently human-found point is supplied, state the remaining criterion-5 limitation at the gate rather than treating the second-pass selection as an automatic top-band result.
 
 If the human names a point of their own, verify it against the contract and the code, then draft the two readings and the sentence for them.
 
@@ -74,7 +76,7 @@ If the human names a point of their own, verify it against the contract and the 
 Show all blocks. Ask "approve, or anything to change or drop?". Check together:
 
 - every block has all five fields, a concrete proposed sentence, and a quoted section;
-- at least one point is outside your first list and chosen by the human;
+- discovery provenance is explicit, and any claim to the rubric's top band includes at least one human-found point not supplied by the agent;
 - nothing is "no ambiguities".
 
 Record the answers in the AI-LOG entry.
