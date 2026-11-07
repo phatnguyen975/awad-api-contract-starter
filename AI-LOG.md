@@ -36,3 +36,35 @@ G2 response (verbatim):
 
 Approved. I checked the diff: nothing in test/ or CONTRACT.md, and the new tables are only in migrations/002_*.
 Commit and tag.
+
+## 2026-11-07 — Phase 3: Run 1
+
+```
+Tool: Codex (GPT-6)
+Prompt: Continue after the approved first-attempt commit and tag, using ia3-contract-run to capture the first contract-test run exactly once.
+Asked for: Preserve and commit the first official run before any fixes.
+Kept: The complete stdout/stderr capture in contract-run-1.txt, committed alone as c6a383d after first-attempt commit b92fcf1 and tag ia3-first-attempt. Node was v26.13.0 and the working tree was clean before the run.
+Changed: Used the skill's cmd redirection fallback to capture Node's bytes without PowerShell stderr conversion or UTF-16 encoding. No implementation changed and the capture was not edited or replaced.
+Rejected: Nothing rejected in this step.
+By hand: The human approved G2 and instructed the agent to commit and tag; the agent then followed the workflow into phase 3 without an additional gate.
+```
+
+Command: cmd /c "npm run contract > contract-run-1.txt 2>&1" (executed once).
+
+Result: 29 tests, 27 passed, 0 failed, 2 cancelled; command exit status 1. The multi-instance suite reported a migration-subprocess setup failure. UTF-8 verification passed with no BOM or NUL bytes. The capture-only commit intentionally contains no AI-LOG changes; this entry belongs in the next, phase-4 commit.
+
+## 2026-11-07 — Phase 4: Explain run 1
+
+```
+Tool: Codex (GPT-6)
+Prompt: Explain every test that did not complete successfully in run 1 from its output, the contract, and the tagged first-attempt implementation; stop at G4 before fixing.
+Asked for: Record two honest explanations for the cancelled tests and distinguish setup failure from unobserved API behavior.
+Kept: The human approved the two NOTES.md section 2 explanations. Each names a cancelled test, quotes the relevant contract sentence, describes the tagged SQLite-backed implementation, and states that no HTTP outcome was observed. Section 4 records the parent-suite migration-launch finding.
+Changed: Replaced the unrun placeholder with the actual counts and two explanations. Counted the two cancelled tests separately from the summary's zero failed tests; the failed parent-suite setup is recorded as a shared finding, not a third test. Read the implementation through git show ia3-first-attempt:src/v1.js, without opening test source.
+Rejected: Did not attribute an incorrect API response to either cancelled test, because the suite stopped before those behaviors ran. No contract wording change or implementation fix is justified by that output alone.
+By hand: The human read and approved the explanations at G4. No fix prompt has been approved yet.
+```
+
+Diagnostic: A standalone Node child-process check ran npm --version directly and through cmd. The direct invocation returned status null and ENOENT; the cmd invocation succeeded. This supports a Windows npm-launch hypothesis, without confirming the unread test harness's exact invocation. No contract re-run, test-source inspection, or code change followed run 1.
+
+G4 response (verbatim): Approved. I read the lines.

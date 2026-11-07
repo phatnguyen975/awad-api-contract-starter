@@ -13,7 +13,12 @@ The predictions below were drafted by the implementing agent before reading any 
 
 ## 2. First run — failures in contract-run-1.txt
 
-Not run yet. No test results or implementation behavior have been observed.
+First attempt: legacy 3/3; contract 27/29 passed, 0 failed, 2 cancelled. Implementation: `b92fcf1` (`ia3-first-attempt`). The unmodified first-run capture is committed as `c6a383d`.
+
+Both cancelled tests are listed below because neither completed. The parent suite's setup reported `npm run migrate failed: undefined` with a null process status; this is not evidence of two incorrect HTTP responses. There are two test entries despite the summary's `fail 0`, because it separately reports `cancelled 2`.
+
+- **`§4.2 a retry that lands on the other instance is still a replay`** — CONTRACT §4.2: "Same key, same body → the **stored** response: status `201`, the identical body, the same `Location`, plus the header **`Idempotent-Replayed: true`**." The agent did: in the tagged implementation, `priorRequest` reads the saved fingerprint, status, body and Location from SQLite, and `placeOrder` replays that saved response. In run 1, suite setup stopped at the migration subprocess, so this test was cancelled before exercising the second instance; no HTTP outcome was observed. Read two ways? no; I would not change the contract wording to address this setup failure.
+- **`§4.4 a cursor from one instance works on the other`** — CONTRACT §4.4: "A cursor is **opaque**: the client stores it and sends it back unchanged, and never builds one." The agent did: in the tagged implementation, `listOrders` stores each random token and its snapshot, boundary and table filter in SQLite and resolves incoming tokens from that same database. In run 1, the same parent-suite setup failure cancelled this test before another instance used the cursor; no HTTP outcome was observed. Read two ways? no; I would not change the contract wording to address this setup failure.
 
 ## 3. Sentences that could be read two ways
 
@@ -21,7 +26,7 @@ To be filled in phase 6 after the human asks the ambiguity question.
 
 ## 4. Findings about the tests or the contract
 
-No findings recorded in this phase.
+- Run 1: the suite `§4 two instances, one database (as in session 4)` stopped during setup with `npm run migrate failed: undefined` and a null process status; its two tests were cancelled. A separate Node child-process diagnostic on Windows found that invoking npm directly returns status null with ENOENT, while invoking npm through cmd succeeds. This is consistent with an npm-launch compatibility issue, but I have not read the test source and cannot confirm the suite's exact invocation. The repository migration runner itself already passed direct up/down/up after the authorized fileURLToPath fix. I would investigate the execution environment before changing /v1 behavior. Neither test/ nor CONTRACT.md was edited, and run 1 was not repeated or replaced.
 
 ## 5. Prediction outcomes
 
