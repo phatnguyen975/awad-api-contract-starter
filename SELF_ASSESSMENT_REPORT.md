@@ -4,7 +4,7 @@
 
 **Total I claim:** 100/100
 
-**Status:** Prepared for an independent review in a new session. The human authorized committing this review copy and deferred packaging until after that review. C2 and its log entry are committed at `007743f`. No submission zip has been created.
+**Status:** Packaging authorized after the human supplied an independent review of `d391f86` reporting 100/100. An archive of that committed state was extracted and verified successfully before preparing the final submission archive. C2 and its log entry are committed at `007743f`. Submission remains the human's responsibility.
 
 This assessment applies the six criteria in [docs/ia3-requirements.md](docs/ia3-requirements.md) to the current deliverables and their actual evidence. The table is the current score proposal; chronological log entries retain the proposals made at their respective times. The instructor's run and assessment determine the awarded mark.
 
@@ -40,12 +40,12 @@ C2 was introduced in my four-candidate message before the agent evaluated it, an
 | Clean committed baseline | A fresh git clone --no-hardlinks at `2e5bb12`, mounted read-only, with temporary SQLite databases and networking disabled during execution |
 | Migration verification | On a separate temporary database: migrate, migrate:down, migrate all succeeded |
 | Clean grading sequence | migrate, seed, npm test, npm run contract all succeeded; seed added 200 menu items |
-| Latest available verification | Legacy: tests 3, pass 3, fail 0, cancelled 0. Contract: tests 29, pass 29, fail 0, cancelled 0. No application code has changed since those checks. |
+| Extracted-archive verification | A ZIP built from committed `d391f86` was extracted into an empty directory. The grading sequence passed with Linux Node v22.23.4 in the pinned image above: legacy tests 3, pass 3, fail 0, cancelled 0; contract tests 29, pass 29, fail 0, cancelled 0. The extracted Git tree was clean and git fsck succeeded. No application code has changed since those checks. |
 | Capture contents | The final capture contains contract output only; the legacy result comes from verification, not from a claim that legacy output appears in that capture. Both captures are UTF-8 and unchanged. |
 | Source history | No source, migration or migration-runner changes between ia3-first-attempt and run 1, or after final-capture commit `06f8e43`; no implementation-fix commit was needed |
 | Protected files and exclusions | Test blob IDs, CONTRACT.md and package.json match ia3-starter; no data/, node_modules/ or .agents/scratch/ files are tracked |
 
-Local diagnostic output is retained in ignored .agents/scratch/phase8-preflight.txt and .agents/scratch/submission-review-current.txt. The committed baseline, commands, environment and results are recorded here so evidence does not depend solely on excluded scratch files. Later edits have affected documentation only; no additional runtime result or commit is invented.
+Local diagnostic output is retained in ignored .agents/scratch/phase8-preflight.txt, .agents/scratch/submission-review-current.txt and .agents/scratch/archive-candidate-verify.txt. The committed baselines, commands, environment and results are recorded here so evidence does not depend solely on excluded scratch files. The packaging update affects documentation only and preserves both official run captures.
 
 ## What I did not manage
 
@@ -57,4 +57,4 @@ I would agree the execution environment and clarify unsupported-method handling 
 
 ## Submission readiness
 
-The human authorized committing the documentation and this report for an independent assessment in a new session. Packaging and submission are intentionally on hold until the human authorizes them after that review. The eventual archive must include .git and exclude data/, node_modules/ and .agents/scratch/, and the extracted archive must pass the grading sequence. Its total must equal the approved report total. Archive creation and unzip-and-run verification have not been performed.
+After supplying the independent review, the human explicitly authorized creating the ZIP and excluding unrelated files. The approved name is `23127449_100.zip`, matching the table total. Packaging includes every tracked project file and the complete .git directory, and excludes data/, node_modules/, .agents/scratch/ and other untracked working files. The archive candidate passed CRC, required-file, exclusion and extracted-repository checks, followed by migrate, seed, npm test and npm run contract. The final archive is rebuilt after committing this documentation update and checked again before handover. Creating the archive does not submit it to Classroom.
